@@ -54,6 +54,7 @@ module Line
               height: 520
             ).send(
               to_mid: to_mid,
+              image_url: "https://upload.wikimedia.org/wikipedia/commons/1/1e/Stonehenge.jpg",
               alt_text: "test!!!!",
             )
           end
