@@ -33,7 +33,7 @@ module Line
             client.send_sticker(
               to_mid: to_mid,
               stkpkgid: data.content[:stkpkgid],                                          # contentMetadata.STKPKGID
-              stkid: data.content[:stkpkgid],                                           # contentMetadata.STKID
+              stkid: data.content[:stkid],                                           # contentMetadata.STKID
               stkver: data.content[:stkver]                                           # contentMetadata.STKVER
             )
             # client.rich_message.set_action(
