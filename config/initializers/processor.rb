@@ -54,7 +54,6 @@ module Line
               height: 520
             ).send(
               to_mid: to_mid,
-              image_url: 'http://65.media.tumblr.com/77dd3a7c98eef3f41a8b547ab4bf4d17/tumblr_o9a8nvY1iv1vxbb8ho1_1280.jpg',
               alt_text: "test!!!!",
             )
           end
