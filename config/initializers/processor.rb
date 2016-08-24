@@ -32,8 +32,8 @@ module Line
           when Line::Bot::Message::Image
             client.rich_message.set_action(
               MANGA: {
-                text: 'manga',
-                link_url: "http://yh11.tumblr.com/page/9",
+                text: "manga",
+                link_url: 'http://yh11.tumblr.com/page/9',
               },
               HELLO: {
                 text: "Say hello.",
@@ -54,7 +54,7 @@ module Line
               height: 520
             ).send(
               to_mid: to_mid,
-              image_url: "http://yh11.tumblr.com/image/141555908945",
+              image_url: 'http://yh11.tumblr.com/image/141555908945',
               alt_text: "test!!!!",
             )
           end
