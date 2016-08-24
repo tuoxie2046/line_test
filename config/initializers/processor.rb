@@ -12,6 +12,12 @@ module Line
         @client = client
         @data = data
         @from_mid = data.from_mid
+        user = User.where(mid: from_mid).first_or_initialize
+        if user.stage
+        else 
+          user.stage = 0
+          user.save!
+        end
       end
 
       def process
@@ -25,9 +31,6 @@ module Line
             )
           end
         when Line::Bot::Receive::Message
-          user = User.where(mid: from_mid).first_or_initialize
-          user.stage = 0
-          user.save!
           case data.content
           when Line::Bot::Message::Text
             client.send_text(
@@ -40,10 +43,10 @@ module Line
 
       # private
       def initial_processor
-        message = "=========================="
-        user = User.where(mid: from_mid).first_or_initialize
-        user.stage = 0
-        user.save!
+        message = "==========================\n"
+        #user = User.where(mid: from_mid).first_or_initialize
+        #user.stage = 0
+        #user.save!
         user = User.where(mid: from_mid).first
 
         stage = user.stage
@@ -113,7 +116,7 @@ module Line
           message += "あなたをグループの一員として認めます！\n"
           message += "ようこそ，悩める彼氏のための相談BOTへ"
           message += "まずあなたが本当に悩める男なのか，私が見定めてあげるわ♪\n"
-          message += "========================================="
+          message += "==========================\n"
           message += "まずあなたの地域はどこ？\n"
           message += "以下の選択の中で１つ入力ください\n"
           message += "練馬, 板橋, 北, 足立, 葛飾, 杉並, 中野, 豊島, 文京, 荒川, 世田谷, 渋谷, 新宿, 千代田, 台東, 墨田, 目黒, 港, 中央, 江東, 江戸川, 品川, 大田\n"
