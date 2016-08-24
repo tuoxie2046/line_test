@@ -26,8 +26,8 @@ module Line
           end
         when Line::Bot::Receive::Message
           user = User.where(mid: from_mid).first_or_initialize
-          user.save!
           user.stage = 0
+          user.save!
           case data.content
           when Line::Bot::Message::Text
             client.send_text(
@@ -42,8 +42,8 @@ module Line
       def initial_processor
         message = "=========================="
         user = User.where(mid: from_mid).first_or_initialize
-        user.save!
         user.stage = 0
+        user.save!
         user = User.where(mid: from_mid).first
 
         stage = user.stage
