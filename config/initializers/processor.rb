@@ -27,8 +27,8 @@ module Line
         when Line::Bot::Receive::Message
           user = User.where(mid: from_mid).first_or_initialize
           user.save!
-          if user
-            user.update_attributes(:stage, 0)
+          if user.length == 1
+            user.stage = 0
           end
           case data.content
           when Line::Bot::Message::Text
@@ -45,12 +45,12 @@ module Line
         message = "=========================="
         user = User.where(mid: from_mid).first_or_initialize
         user.save!
-        if user
-            user[0].update_attributes(:stage, 0)
+        if user.length == 1
+            user.stage = 0
         end
         user = User.where(mid: from_mid)
 
-        stage = user[0].stage
+        stage = user.stage
 
         case stage
         when 0
@@ -60,7 +60,7 @@ module Line
               data = User.where(mid: from_mid)
               #data.first.update_attributes()
               stage += 1
-              user[0].update_attributes(:stage, stage)
+              user.stage = stage
               break
             end
           end
@@ -68,16 +68,16 @@ module Line
           case data.content[:text]
           when "1"
             stage += 1
-            user[0].update_attributes(:stage, stage)
+            user.stage = 0
           when "2"
             stage += 1
-            user[0].update_attributes(:stage, stage)
+            user.stage = stage
           when "3"
             stage += 1
-            user[0].update_attributes(:stage, stage)
+            user.stage = stage
           when "4"
             stage += 1
-            user[0].update_attributes(:stage, stage)
+            user.stage = stage
           else
             message += "選択は正しくない,もう一回しましょう\n"
           end
@@ -98,10 +98,10 @@ module Line
             message += "ふぅ～～ん，素敵じゃない（＞20文字）\n"
           end
           stage += 1
-          user[0].update_attributes(:stage, stage)
+          user.stage = stage
         when 4
           stage += 1
-          user[0].update_attributes(:stage, stage)
+          user.stage = stage
         end
 
         case stage
