@@ -37,6 +37,13 @@ module Line
               to_mid: to_mid,
               text: initial_processor#data.content[:text],
             )
+          when Line::Bot::Message::Sticker
+            client.send_sticker(
+              to_mid: to_mid,
+              stkpkgid: data.content[:stkpkgid],                                          # contentMetadata.STKPKGID
+              stkid: data.content[:stkid],                                           # contentMetadata.STKID
+              stkver: daat.content[:stkver]                                           # contentMetadata.STKVER
+            )
           end
         end
       end
@@ -163,6 +170,9 @@ module Line
             message += "==========================\n"
             message += "審査中（スタンプとかあるとかわいいなぁ）\n"
             message += "あなたは悩める彼氏，．．．．　のようね！（全部ok）\n"
+            stage += 1
+            user.stage = stage
+            user.save!
           end
       else
          message = data.content[:text]
