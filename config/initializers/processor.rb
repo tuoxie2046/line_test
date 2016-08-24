@@ -43,6 +43,7 @@ module Line
 
       # private
       def initial_processor
+        message
         #user = User.where(mid: from_mid).first_or_initialize
         #user.stage = 0
         #user.save!
