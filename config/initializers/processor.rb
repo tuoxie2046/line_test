@@ -55,7 +55,7 @@ module Line
         stage = user.stage
 
         if stage < 5
-          message = nil
+          message = ""
           case stage
           when 0
             #regions = ["練馬", "板橋", "北", "足立", "葛飾", "杉並", "中野", "豊島", "文京", "荒川", "世田谷", "渋谷", "新宿", "千代田", "台東", "墨田", "目黒", "港", "中央", "江東", "江戸川", "品川", "大田"]
