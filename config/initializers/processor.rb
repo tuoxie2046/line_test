@@ -31,21 +31,11 @@ module Line
             )
           when Line::Bot::Message::Image
             client.rich_message.set_action(
-              MANGA: {
-                text: "manga",
-                link_url: "http://yh11.tumblr.com/page/9",
-              },
               HELLO: {
                 text: "Say hello.",
                 params_text: "Hello, Brown!",
                 type: "sendMessage",
               }
-            ).add_listener(
-              action: 'MANGA',
-              x: 0,
-              y: 0,
-              width: 520,
-              height: 520,
             ).add_listener(
               action: 'HELLO',
               x: 521,
