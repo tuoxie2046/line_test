@@ -92,8 +92,9 @@ module Line
             message += "みじかい！もっとあるでしょう！！恥ずかしがらずに！（＜20文字）\n"
           else
             message += "ふぅ～～ん，素敵じゃない（＞20文字）\n"
-            stage += 1
-            user.first.update_attributes(:stage, stage)
+          end
+          stage += 1
+          user.first.update_attributes(:stage, stage)
         when 4
           stage += 1
           user.first.update_attributes(:stage, stage)
