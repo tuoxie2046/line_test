@@ -57,6 +57,7 @@ module Line
               image_url: "http://yh11.tumblr.com/image/141555908945",
               alt_text: "test!!!!",
             )
+          end
         end
       end
 
