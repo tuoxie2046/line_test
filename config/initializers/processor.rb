@@ -43,10 +43,10 @@ module Line
         message = "=========================="
         user = User.where(mid: from_mid).first_or_initialize
         user.save!
-        user.first.update_attributes(:stage, 0)
+        user[0].update_attributes(:stage, 0)
         user = User.where(mid: from_mid)
 
-        stage = user.stage
+        stage = user[0].stage
 
         case stage
         when 0
@@ -56,7 +56,7 @@ module Line
               data = User.where(mid: from_mid)
               #data.first.update_attributes()
               stage += 1
-              user.first.update_attributes(:stage, stage)
+              user[0].update_attributes(:stage, stage)
               break
             end
           end
@@ -64,16 +64,16 @@ module Line
           case data.content[:text]
           when "1"
             stage += 1
-            user.first.update_attributes(:stage, stage)
+            user[0].update_attributes(:stage, stage)
           when "2"
             stage += 1
-            user.first.update_attributes(:stage, stage)
+            user[0].update_attributes(:stage, stage)
           when "3"
             stage += 1
-            user.first.update_attributes(:stage, stage)
+            user[0].update_attributes(:stage, stage)
           when "4"
             stage += 1
-            user.first.update_attributes(:stage, stage)
+            user[0].update_attributes(:stage, stage)
           else
             message += "選択は正しくない,もう一回しましょう\n"
           end
@@ -86,7 +86,7 @@ module Line
             message += "いい感じの出会いしてるじゃないの（＞20文字）\n"
           end
           stage += 1
-          user.first.update_attributes(:stage, stage)
+          user[0].update_attributes(:stage, stage)
         when 3
           if data.content[:text].length < 20
             message += "みじかい！もっとあるでしょう！！恥ずかしがらずに！（＜20文字）\n"
@@ -94,10 +94,10 @@ module Line
             message += "ふぅ～～ん，素敵じゃない（＞20文字）\n"
           end
           stage += 1
-          user.first.update_attributes(:stage, stage)
+          user[0].update_attributes(:stage, stage)
         when 4
           stage += 1
-          user.first.update_attributes(:stage, stage)
+          user[0].update_attributes(:stage, stage)
         end
 
         case stage
