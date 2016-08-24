@@ -31,11 +31,21 @@ module Line
             )
           when Line::Bot::Message::Image
             client.rich_message.set_action(
+              MANGA: {
+                text: 'manga',
+                link_url: 'http://yh11.tumblr.com/page/9',
+              },
               HELLO: {
                 text: "Say hello.",
                 params_text: "Hello, Brown!",
                 type: "sendMessage",
               }
+            ).add_listener(
+              action: 'MANGA',
+              x: 0,
+              y: 0,
+              width: 520,
+              height: 520,
             ).add_listener(
               action: 'HELLO',
               x: 521,
@@ -44,7 +54,7 @@ module Line
               height: 520
             ).send(
               to_mid: to_mid,
-              image_url: 'http://yh11.tumblr.com/image/141555908945',
+              image_url: 'http://65.media.tumblr.com/77dd3a7c98eef3f41a8b547ab4bf4d17/tumblr_o9a8nvY1iv1vxbb8ho1_1280.jpg',
               alt_text: "test!!!!",
             )
           end
