@@ -27,7 +27,7 @@ module Line
         when Line::Bot::Receive::Message
           user = User.where(mid: from_mid).first_or_initialize
           user.save!
-          user.first.update_attributes(:stage, 0)
+          user[0].update_attributes(:stage, 0)
           case data.content
           when Line::Bot::Message::Text
             client.send_text(
