@@ -44,6 +44,12 @@ module Line
               stkid: data.content[:stkid],                                           # contentMetadata.STKID
               stkver: data.content[:stkver]                                           # contentMetadata.STKVER
             )
+          when Line::Bot::Message::Image
+            client.send_image(
+              to_mid: to_mid,
+              image_url: data.content[:image_url],            # originalContentUrl
+              preview_url: data.content[:preview_url],  # previewImageUrl
+            )
           end
         end
       end
