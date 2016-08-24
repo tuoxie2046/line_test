@@ -1,3 +1,3 @@
 class User < ActiveRecord::Base
-  has_many :keywords
+  belongs_to :region
 end

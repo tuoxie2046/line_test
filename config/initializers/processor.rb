@@ -1,15 +1,17 @@
 require 'line/bot/api/version'
 require 'line/bot/utils'
+require 'net/http'
+require 'uri'
 
 module Line
   module Bot
     class Processor
-      attr_accessor :client, :data, :to_mid
+      attr_accessor :client, :data, :from_mid
 
       def initialize(client, data)
         @client = client
         @data = data
-        @to_mid = data.from_mid
+        @from_mid = data.from_mid
       end
 
       def process
@@ -18,7 +20,7 @@ module Line
           case data.content
           when Line::Bot::Operation::AddedAsFriend
             client.send_text(
-              to_mid: to_mid,
+              to_mid: from_mid,
               text: initial_processor,
             )
           end
@@ -27,62 +29,30 @@ module Line
           when Line::Bot::Message::Text
             client.send_text(
               to_mid: to_mid,
-              text: text_processor,
+              text: data.content[:text],
             )
-          when Line::Bot::Message::Sticker
-            client.send_sticker(
-              to_mid: to_mid,
-              stkpkgid: data.content[:stkpkgid],                                          # contentMetadata.STKPKGID
-              stkid: data.content[:stkid],                                           # contentMetadata.STKID
-              stkver: data.content[:stkver]                                           # contentMetadata.STKVER
-            )
-            # client.rich_message.set_action(
-            #   MANGA: {
-            #     text: "manga",
-            #     link_url: 'http://yh11.tumblr.com/page/9',
-            #   },
-            #   HELLO: {
-            #     text: "Say hello.",
-            #     params_text: "Hello, Brown!",
-            #     type: "sendMessage",
-            #   }
-            # ).add_listener(
-            #   action: "MANGA",
-            #   x: 0,
-            #   y: 0,
-            #   width: 520,
-            #   height: 520,
-            # ).add_listener(
-            #   action: "HELLO",
-            #   x: 521,
-            #   y: 0,
-            #   width: 520,
-            #   height: 520
-            # ).send(
-            #   to_mid: to_mid,
-            #   image_url: "https://i.ytimg.com/vi/qS0OLh8UrZk",
-            #   alt_text: "test!!!!",
-            # )
           end
         end
       end
 
-      private
+      # private
       def initial_processor
-        user = User.where(mid: to_mid).first_or_initialize
+        user = User.where(mid: from_mid).first_or_initialize
         user.save!
 
-        message = ""
-        message += "ご登録ありがとうございます！\n"
-        message += "こちらで気になるイベントのキーワードを登録してください\n"
-        message += "https://line-lovers.herokuapp.com/keywords/new"
-
+        message = "あなたをグループの一員として認めます！"
         message
       end
 
       def text_processor
         message = ""
-        message = "テスト"
+      end
+
+      def to_mid
+        mids = User.all.map{|user| user.mid}
+        mids.delete(from_mid)
+
+        mids
       end
     end
   end
