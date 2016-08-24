@@ -57,6 +57,9 @@ module Line
             #regions = ["練馬", "板橋", "北", "足立", "葛飾", "杉並", "中野", "豊島", "文京", "荒川", "世田谷", "渋谷", "新宿", "千代田", "台東", "墨田", "目黒", "港", "中央", "江東", "江戸川", "品川", "大田"]
             regions = Region.all;
             regions.each do |region|
+              Rails.logger.debug("==========================")
+              Rails.logger.debug(region.name)
+              Rails.logger.debug("==========================")
               if region.name === data.content[:text]
                 user.region = region
                 stage += 1
