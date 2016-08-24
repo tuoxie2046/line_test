@@ -29,7 +29,7 @@ module Line
           when Line::Bot::Message::Text
             client.send_text(
               to_mid: to_mid,
-              text: data.content[:text],
+              text: initial_processor#data.content[:text],
             )
           end
         end
