@@ -40,8 +40,21 @@ module Line
         user = User.where(mid: from_mid).first_or_initialize
         user.save!
 
-        message = "あなたをグループの一員として認めます！"
-        message
+        stage = 0
+        case stage
+        when 0
+          message = "あなたをグループの一員として認めます！"
+          message += "ようこそ，悩める彼氏のための相談BOTへ"
+          message += "まずあなたが本当に悩める男なのか，私が見定めてあげるわ♪"
+          message += "今の彼女とは付き合い始めて何か月？"
+        when 1
+          message = "どこで出会ったのかしら？なれそめを詳しく教えて？"
+        when 2
+          message = "彼女のどこが好きなのかしら，詳しく聞かせて？"
+        when 3
+          message = "審査中（スタンプとかあるとかわいいなぁ）"
+        end 
+
       end
 
       def text_processor
@@ -50,7 +63,7 @@ module Line
 
       def to_mid
         mids = User.all.map{|user| user.mid}
-        mids.delete(from_mid)
+        # mids.delete(from_mid)
 
         mids
       end
