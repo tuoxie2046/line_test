@@ -48,6 +48,10 @@ module Line
         #user.save!
         user = User.where(mid: from_mid).first
 
+        if data.content[:text] === "更新"
+          user.stage = 0
+          user.save!
+        end
         stage = user.stage
 
         if stage < 5
@@ -160,7 +164,7 @@ module Line
             message += "審査中（スタンプとかあるとかわいいなぁ）\n"
             message += "あなたは悩める彼氏，．．．．　のようね！（全部ok）\n"
           end
-      else 
+      else
          message = data.content[:text]
       end
 
