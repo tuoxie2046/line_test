@@ -57,6 +57,7 @@ module Line
               #data.first.update_attributes()
               stage += 1
               user.stage = stage
+              user.save!
               break
             end
           end
@@ -64,16 +65,20 @@ module Line
           case data.content[:text]
           when "1"
             stage += 1
-            user.stage = 0
+            user.stage = stage
+            user.save!
           when "2"
             stage += 1
             user.stage = stage
+            user.save!
           when "3"
             stage += 1
             user.stage = stage
+            user.save!
           when "4"
             stage += 1
             user.stage = stage
+            user.save!
           else
             message += "選択は正しくない,もう一回しましょう\n"
           end
@@ -87,6 +92,7 @@ module Line
           end
           stage += 1
           user.stage = stage
+          user.save!
         when 3
           if data.content[:text].length < 20
             message += "みじかい！もっとあるでしょう！！恥ずかしがらずに！（＜20文字）\n"
@@ -95,9 +101,11 @@ module Line
           end
           stage += 1
           user.stage = stage
+          user.save!
         when 4
           stage += 1
           user.stage = stage
+          user.save!
         end
 
         case stage
