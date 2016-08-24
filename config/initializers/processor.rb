@@ -44,7 +44,7 @@ module Line
         user = User.where(mid: from_mid).first_or_initialize
         user.save!
         user.stage = 0
-        user = User.where(mid: from_mid)
+        user = User.where(mid: from_mid).first
 
         stage = user.stage
 
@@ -53,7 +53,7 @@ module Line
           regions = ["練馬", "板橋", "北", "足立", "葛飾", "杉並", "中野", "豊島", "文京", "荒川", "世田谷", "渋谷", "新宿", "千代田", "台東", "墨田", "目黒", "港", "中央", "江東", "江戸川", "品川", "大田"]
           regions.each do |region|
             if region === data.content[:text]
-              data = User.where(mid: from_mid)
+              data = User.where(mid: from_mid).first
               #data.first.update_attributes()
               stage += 1
               user.stage = stage
