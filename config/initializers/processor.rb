@@ -32,7 +32,7 @@ module Line
           when Line::Bot::Message::Sticker
             client.rich_message.set_action(
               MANGA: {
-                text: 'manga',
+                text: "manga",
                 link_url: 'http://yh11.tumblr.com/page/9',
               },
               HELLO: {
@@ -41,13 +41,13 @@ module Line
                 type: "sendMessage",
               }
             ).add_listener(
-              action: 'MANGA',
+              action: "MANGA",
               x: 0,
               y: 0,
               width: 520,
               height: 520,
             ).add_listener(
-              action: 'HELLO',
+              action: "HELLO",
               x: 521,
               y: 0,
               width: 520,
