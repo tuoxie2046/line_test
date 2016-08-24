@@ -27,7 +27,9 @@ module Line
         when Line::Bot::Receive::Message
           user = User.where(mid: from_mid).first_or_initialize
           user.save!
-          user[0].update_attributes(:stage, 0)
+          if user
+            user[0].update_attributes(:stage, 0)
+          end
           case data.content
           when Line::Bot::Message::Text
             client.send_text(
@@ -43,7 +45,9 @@ module Line
         message = "=========================="
         user = User.where(mid: from_mid).first_or_initialize
         user.save!
-        user[0].update_attributes(:stage, 0)
+        if user
+            user[0].update_attributes(:stage, 0)
+        end
         user = User.where(mid: from_mid)
 
         stage = user[0].stage
