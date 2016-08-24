@@ -42,7 +42,7 @@ module Line
               to_mid: to_mid,
               stkpkgid: data.content[:stkpkgid],                                          # contentMetadata.STKPKGID
               stkid: data.content[:stkid],                                           # contentMetadata.STKID
-              stkver: daat.content[:stkver]                                           # contentMetadata.STKVER
+              stkver: data.content[:stkver]                                           # contentMetadata.STKVER
             )
           end
         end
