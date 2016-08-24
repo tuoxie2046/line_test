@@ -27,9 +27,7 @@ module Line
         when Line::Bot::Receive::Message
           user = User.where(mid: from_mid).first_or_initialize
           user.save!
-          if user.length == 1
-            user.stage = 0
-          end
+          user.stage = 0
           case data.content
           when Line::Bot::Message::Text
             client.send_text(
@@ -45,9 +43,7 @@ module Line
         message = "=========================="
         user = User.where(mid: from_mid).first_or_initialize
         user.save!
-        if user.length == 1
-            user.stage = 0
-        end
+        user.stage = 0
         user = User.where(mid: from_mid)
 
         stage = user.stage
@@ -90,7 +86,7 @@ module Line
             message += "いい感じの出会いしてるじゃないの（＞20文字）\n"
           end
           stage += 1
-          user[0].update_attributes(:stage, stage)
+          user.stage = stage
         when 3
           if data.content[:text].length < 20
             message += "みじかい！もっとあるでしょう！！恥ずかしがらずに！（＜20文字）\n"
