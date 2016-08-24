@@ -29,7 +29,7 @@ module Line
               to_mid: to_mid,
               text: text_processor,
             )
-          when Line::Bot::Message::Image
+          when Line::Bot::Message::Sticker
             client.rich_message.set_action(
               MANGA: {
                 text: 'manga',
