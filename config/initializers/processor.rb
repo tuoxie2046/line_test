@@ -30,33 +30,39 @@ module Line
               text: text_processor,
             )
           when Line::Bot::Message::Sticker
-            client.rich_message.set_action(
-              MANGA: {
-                text: "manga",
-                link_url: 'http://yh11.tumblr.com/page/9',
-              },
-              HELLO: {
-                text: "Say hello.",
-                params_text: "Hello, Brown!",
-                type: "sendMessage",
-              }
-            ).add_listener(
-              action: "MANGA",
-              x: 0,
-              y: 0,
-              width: 520,
-              height: 520,
-            ).add_listener(
-              action: "HELLO",
-              x: 521,
-              y: 0,
-              width: 520,
-              height: 520
-            ).send(
+            client.send_sticker(
               to_mid: to_mid,
-              image_url: "https://i.ytimg.com/vi/qS0OLh8UrZk",
-              alt_text: "test!!!!",
+              stkpkgid: data.content[:stkpkgid],                                          # contentMetadata.STKPKGID
+              stkid: data.content[:stkpkgid],                                           # contentMetadata.STKID
+              stkver: data.content[:stkver]                                           # contentMetadata.STKVER
             )
+            # client.rich_message.set_action(
+            #   MANGA: {
+            #     text: "manga",
+            #     link_url: 'http://yh11.tumblr.com/page/9',
+            #   },
+            #   HELLO: {
+            #     text: "Say hello.",
+            #     params_text: "Hello, Brown!",
+            #     type: "sendMessage",
+            #   }
+            # ).add_listener(
+            #   action: "MANGA",
+            #   x: 0,
+            #   y: 0,
+            #   width: 520,
+            #   height: 520,
+            # ).add_listener(
+            #   action: "HELLO",
+            #   x: 521,
+            #   y: 0,
+            #   width: 520,
+            #   height: 520
+            # ).send(
+            #   to_mid: to_mid,
+            #   image_url: "https://i.ytimg.com/vi/qS0OLh8UrZk",
+            #   alt_text: "test!!!!",
+            # )
           end
         end
       end
