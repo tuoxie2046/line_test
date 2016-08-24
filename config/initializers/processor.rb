@@ -28,7 +28,7 @@ module Line
           user = User.where(mid: from_mid).first_or_initialize
           user.save!
           if user
-            user[0].update_attributes(:stage, 0)
+            user.update_attributes(:stage, 0)
           end
           case data.content
           when Line::Bot::Message::Text
