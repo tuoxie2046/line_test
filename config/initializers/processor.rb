@@ -119,7 +119,7 @@ module Line
               height: 520
             ).send(
               to_mid: from_mid,
-              image_url: "https://s3-ap-northeast-1.amazonaws.com/line-bot-20160824/menu",
+              image_url: "https://s3-ap-northeast-1.amazonaws.com/line-bot-20160824/menu_line",
               alt_text: "menu",
             )
           end
