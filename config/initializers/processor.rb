@@ -30,7 +30,7 @@ module Line
         when Line::Bot::Receive::Message
           case data.content
           when Line::Bot::Message::Text
-            if user.stage > 3
+            if user.stage > 4
               case text
               when /質問/
                 unless user.questioner
@@ -88,13 +88,36 @@ module Line
               preview_url: image_url[1]
             )
           when Line::Bot::Message::Sticker
-            # client.send_sticker(
-            #   to_mid: to_mids,
-            #   stkpkgid: data.content[:stkpkgid],
-            #   stkid: data.content[:stkid],
-            #   stkver: data.content[:stkver],
-            # )
-            client.rich_message.set_action(
+            client.send_sticker(
+              to_mid: to_mids,
+              stkpkgid: data.content[:stkpkgid],
+              stkid: data.content[:stkid],
+              stkver: data.content[:stkver],
+            )
+          end
+        end
+      end
+
+      private
+      def initial_processor
+        if text == "更新"
+          user.stage = 0
+          user.save
+        end
+
+        message = ""
+        msg_flg = false
+          # management
+        case user.stage
+        when 0
+          messages = BotMessage.find_by(stage: user.stage)
+          messages.text.split("<section>").each do |message|
+            send_to_him(message)
+          end
+          msg_flg = true
+          user.increment!(:stage)
+        when 1
+          client.rich_message.set_action(
               YES: {
                 text: "はい",
                 params_text: "はい",
@@ -122,29 +145,9 @@ module Line
               image_url: "https://s3-ap-northeast-1.amazonaws.com/line-bot-20160824/menu_line",
               alt_text: "menu",
             )
-          end
-        end
-      end
-
-      private
-      def initial_processor
-        if text == "更新"
-          user.stage = 0
-          user.save
-        end
-
-        message = ""
-        msg_flg = false
-          # management
-        case user.stage
-        when 0
-          messages = BotMessage.find_by(stage: user.stage)
-          messages.text.split("<section>").each do |message|
-            send_to_him(message)
-          end
-          msg_flg = true
-          user.increment!(:stage)
-        when 1
+            msg_flg = true
+            user.increment!(:stage)
+        when 2
           region = Region.find_by(name: text)
           unless region
             send_to_him("知らない場所だわ...ごめんなさい...")
@@ -155,7 +158,7 @@ module Line
             user.increment!(:stage)
             send_to_him("ふ～ん...#{region.name}によく行くのね")
           end
-        when 2
+        when 3
           if text =~ /年/
             length = 100
           else
@@ -178,7 +181,7 @@ module Line
             msg_flg =  true
             user.increment!(:stage)
           end
-        when 3
+        when 4
           case text.length
           when 15 .. Float::INFINITY
             send_to_him("あら！なかなかいい出会いじゃない！")
@@ -192,7 +195,7 @@ module Line
         end
 
         # management
-        if user.stage == 4
+        if user.stage == 5
           messages = BotMessage.find_by(stage: user.stage)
           messages.text.split("<section>").each do |message|
             send_to_him(message)
