@@ -31,18 +31,18 @@ BotMessage.create(
 
 BotMessage.create(
   text: "まず、彼女とよく行く場所を聞いてもいいかしら？",
-  stage: 2
+  stage: 1
 )
 
 
 BotMessage.create(
   text: "今の彼女とは付き合い始めて何ヶ月なの？",
-  stage: 3
+  stage: 2
 )
 
 BotMessage.create(
   text: "その娘とはどこで出会ったの？馴れ初めを教えてちょうだい？",
-  stage: 4
+  stage: 3
 )
 
 BotMessage.create(
@@ -60,5 +60,5 @@ BotMessage.create(
 <section>
 これからは同じ迷彼として、お互いに相談してみんなが幸せになることを祈っているわ
 ",
-  stage: 5
+  stage: 4
 )

@@ -114,9 +114,6 @@ module Line
           messages.text.split("<section>").each do |message|
             send_to_him(message)
           end
-          msg_flg = true
-          user.increment!(:stage)
-        when 1
           client.rich_message.set_action(
               YES: {
                 text: "はい",
@@ -145,9 +142,9 @@ module Line
               image_url: "https://s3-ap-northeast-1.amazonaws.com/line-bot-20160824/menu_line",
               alt_text: "menu",
             )
-            msg_flg = true
-            user.increment!(:stage)
-        when 2
+          msg_flg = true
+          user.increment!(:stage)
+        when 1
           region = Region.find_by(name: text)
           unless region
             send_to_him("知らない場所だわ...ごめんなさい...")
@@ -158,7 +155,7 @@ module Line
             user.increment!(:stage)
             send_to_him("ふ～ん...#{region.name}によく行くのね")
           end
-        when 3
+        when 2
           if text =~ /年/
             length = 100
           else
@@ -181,7 +178,7 @@ module Line
             msg_flg =  true
             user.increment!(:stage)
           end
-        when 4
+        when 3
           case text.length
           when 15 .. Float::INFINITY
             send_to_him("あら！なかなかいい出会いじゃない！")
@@ -195,7 +192,7 @@ module Line
         end
 
         # management
-        if user.stage == 5
+        if user.stage == 4
           messages = BotMessage.find_by(stage: user.stage)
           messages.text.split("<section>").each do |message|
             send_to_him(message)
