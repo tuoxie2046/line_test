@@ -95,23 +95,24 @@ module Line
             #   stkver: data.content[:stkver],
             # )
             client.rich_message.set_action(
-              MANGA: {
-                text: 'manga',
-                link_url: "https://bakshree.wordpress.com/mangacrazy-the-free-manga-downloader/",
+              YES: {
+                text: "はい",
+                params_text: "はい",
+                type: "sendMessage",
               },
-              HELLO: {
-                text: "Say hello.",
-                params_text: "Hello, Brown!",
+              NO: {
+                text: "いや、やめようかな…",
+                params_text: "いや、やめようかな…",
                 type: "sendMessage",
               }
             ).add_listener(
-              action: 'MANGA',
+              action: 'YES',
               x: 0,
               y: 0,
               width: 520,
               height: 520,
             ).add_listener(
-              action: 'HELLO',
+              action: 'NO',
               x: 521,
               y: 0,
               width: 520,
@@ -119,7 +120,7 @@ module Line
             ).send(
               to_mid: from_mid,
               image_url: "https://s3-ap-northeast-1.amazonaws.com/line-bot-20160824/menu",
-              alt_text: "test!!!!",
+              alt_text: "menu",
             )
           end
         end
