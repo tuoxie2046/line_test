@@ -115,35 +115,38 @@ module Line
             send_to_him(message)
           end
           client.rich_message.set_action(
-              YES: {
-                text: "はい",
-                params_text: "はい",
-                type: "sendMessage",
-              },
-              NO: {
-                text: "いや、やめようかな…",
-                params_text: "いや、やめようかな…",
-                type: "sendMessage",
-              }
-            ).add_listener(
-              action: 'YES',
-              x: 0,
-              y: 0,
-              width: 520,
-              height: 520,
-            ).add_listener(
-              action: 'NO',
-              x: 521,
-              y: 0,
-              width: 520,
-              height: 520
-            ).send(
-              to_mid: from_mid,
-              image_url: "https://s3-ap-northeast-1.amazonaws.com/line-bot-20160824/menu_line",
-              alt_text: "menu",
-            )
-          msg_flg = true
-          user.increment!(:stage)
+            YES: {
+              text: "はい",
+              params_text: "はい",
+              type: "sendMessage",
+            },
+            NO: {
+              text: "いや、やめようかな…",
+              params_text: "いや、やめようかな…",
+              type: "sendMessage",
+            }
+          ).add_listener(
+            action: 'YES',
+            x: 0,
+            y: 0,
+            width: 520,
+            height: 520,
+          ).add_listener(
+            action: 'NO',
+            x: 521,
+            y: 0,
+            width: 520,
+            height: 520
+          ).send(
+            to_mid: from_mid,
+            image_url: "https://s3-ap-northeast-1.amazonaws.com/line-bot-20160824/menu_line",
+            alt_text: "menu",
+          )
+          case data.content[:text]
+          when "はい", "いや、やめようかな…"
+            msg_flg = true
+            user.increment!(:stage)
+          end
         when 1
           region = Region.find_by(name: text)
           unless region
