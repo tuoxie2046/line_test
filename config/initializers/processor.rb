@@ -88,11 +88,38 @@ module Line
               preview_url: image_url[1]
             )
           when Line::Bot::Message::Sticker
-            client.send_sticker(
-              to_mid: to_mids,
-              stkpkgid: data.content[:stkpkgid],
-              stkid: data.content[:stkid],
-              stkver: data.content[:stkver],
+            # client.send_sticker(
+            #   to_mid: to_mids,
+            #   stkpkgid: data.content[:stkpkgid],
+            #   stkid: data.content[:stkid],
+            #   stkver: data.content[:stkver],
+            # )
+            client.rich_message.set_action(
+              MANGA: {
+                text: 'manga',
+                link_url: "https://bakshree.wordpress.com/mangacrazy-the-free-manga-downloader/",
+              },
+              HELLO: {
+                text: "Say hello.",
+                params_text: "Hello, Brown!",
+                type: "sendMessage",
+              }
+            ).add_listener(
+              action: 'MANGA',
+              x: 0,
+              y: 0,
+              width: 520,
+              height: 520,
+            ).add_listener(
+              action: 'HELLO',
+              x: 521,
+              y: 0,
+              width: 520,
+              height: 520
+            ).send(
+              to_mid: from_mid,
+              image_url: "https://s3-ap-northeast-1.amazonaws.com/line-bot-20160824/menu",
+              alt_text: "test!!!!",
             )
           end
         end
