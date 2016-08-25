@@ -269,10 +269,10 @@ module Line
 
         s3.put_object(
           body: preview.to_blob,
-          key: "line/preview/#{filename}.jpg"
+          key: "line/preview/#{filename}.png"
         )
 
-        return ["https://s3-ap-northeast-1.amazonaws.com/proto-storage/line/original/#{filename}.png", "https://s3-ap-northeast-1.amazonaws.com/proto-storage/line/preview/#{filename}.jpg"]
+        return ["https://s3-ap-northeast-1.amazonaws.com/line-bot-20160824/line/original/#{filename}.png", "https://s3-ap-northeast-1.amazonaws.com/line-bot-20160824/line/preview/#{filename}.jpg"]
       end
     end
   end
