@@ -52,6 +52,7 @@ GEM
     debug_inspector (0.0.2)
     erubis (2.7.0)
     execjs (2.7.0)
+    gimei (0.2.0)
     globalid (0.3.7)
       activesupport (>= 4.1.0)
     i18n (0.7.0)
@@ -76,11 +77,7 @@ GEM
     minitest (5.9.0)
     multi_json (1.12.1)
     mysql2 (0.4.4)
-    mysql2 (0.4.4-x64-mingw32)
     nokogiri (1.6.8)
-      mini_portile2 (~> 2.1.0)
-      pkg-config (~> 1.1.7)
-    nokogiri (1.6.8-x64-mingw32)
       mini_portile2 (~> 2.1.0)
       pkg-config (~> 1.1.7)
     pkg-config (1.1.7)
@@ -145,8 +142,6 @@ GEM
     turbolinks-source (5.0.0)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
-    tzinfo-data (1.2016.6)
-      tzinfo (>= 1.0.0)
     uglifier (3.0.2)
       execjs (>= 0.3.0, < 3)
     web-console (2.3.0)
@@ -157,11 +152,11 @@ GEM
 
 PLATFORMS
   ruby
-  x64-mingw32
 
 DEPENDENCIES
   byebug
   coffee-rails (~> 4.1.0)
+  gimei
   jbuilder (~> 2.0)
   jquery-rails
   line-bot-api
@@ -172,7 +167,6 @@ DEPENDENCIES
   sdoc (~> 0.4.0)
   spring
   turbolinks
-  tzinfo-data
   uglifier (>= 1.3.0)
   web-console (~> 2.0)
 

@@ -1,23 +1,19 @@
 require 'line/bot/api/version'
 require 'line/bot/utils'
-require 'net/http'
-require 'uri'
 
 module Line
   module Bot
     class Processor
-      attr_accessor :client, :data, :from_mid
+      attr_accessor :client, :data, :text, :from_mid, :user
 
       def initialize(client, data)
         @client = client
         @data = data
+        @text = data.content[:text]
         @from_mid = data.from_mid
-        user = User.where(mid: from_mid).first_or_initialize
-        if user.stage
-        else 
-          user.stage = 0
-          user.save!
-        end
+        user = User.where(mid: data.from_mid).first_or_initialize
+        user.save!
+        @user = user
       end
 
       def process
@@ -25,175 +21,206 @@ module Line
         when Line::Bot::Receive::Operation
           case data.content
           when Line::Bot::Operation::AddedAsFriend
-            client.send_text(
-              to_mid: from_mid,
-              text: initial_processor,
-            )
+            initial_processor
           end
         when Line::Bot::Receive::Message
           case data.content
           when Line::Bot::Message::Text
-            client.send_text(
-              to_mid: to_mid,
-              text: initial_processor#data.content[:text],
-            )
+            if user.stage > 3
+              case text
+              when /質問/
+                unless user.questioner
+                  region_name = text.match(/\p{Han}+(?=(\p{Hiragana}+)質問)/)
+                  if region_name
+                    region_name = region_name.to_s
+                    region = Region.find_by(name: region_name)
+                    case region
+                    when nil
+                      send_to_him("そこについて詳しい人はまだいないみたい...力になれずごめんなさい...")
+                    when user.region
+                      user.switch_questioner
+
+                      send_to_him("あなたも#{region.name}のことで知らないことがあるのね...")
+                      send_to_him("いいわよ！存分に質問しなさい！")
+                      send_to_them("#{user.name}さんが困ってるみたい！みんな助けてあげてね！")
+
+                    else
+                      user.switch_questioner
+                      user.switch_region(region: region)
+
+                      send_to_him("#{region_name}に連れてきたわよ！さっそくみんなに質問してみましょう！")
+                      send_to_them("#{user.name}さんが困ってるみたい！みんな助けてあげてね！")
+                    end
+                  else
+                    send_to_him("どこのことを質問したいのかしら？\n「渋谷で質問」みたいに教えてくれると嬉しいわ。")
+                  end
+                else
+                  send_to_them(text_processor)
+                end
+              when /ありがとう/
+                if user.questioner
+                  send_to_them(text_processor)
+                  user.switch_questioner
+
+                  send_to_them "みんなのおかげで#{user.name}さんの悩みは解決したみたい！"
+                  user.switch_region
+
+                  send_to_him "おかえりなさい！無事解決したみたいね！"
+                  send_to_him "今度はあなたが#{user.region.name}について教えてあげる番よ！"
+                else
+                  send_to_them(text_processor)
+                end
+              else
+                send_to_them(text_processor)
+              end
+            else
+              initial_processor
+            end
           when Line::Bot::Message::Sticker
             client.send_sticker(
-              to_mid: to_mid,
-              stkpkgid: data.content[:stkpkgid],                                          # contentMetadata.STKPKGID
-              stkid: data.content[:stkid],                                           # contentMetadata.STKID
-              stkver: data.content[:stkver]                                           # contentMetadata.STKVER
-            )
-          when Line::Bot::Message::Image
-            client.send_image(
-              to_mid: to_mid,
-              image_url: data.content[:image_url],            # originalContentUrl
-              preview_url: data.content[:preview_url],  # previewImageUrl
+              to_mid: to_mids,
+              stkpkgid: data.content[:stkpkgid],
+              stkid: data.content[:stkid],
+              stkver: data.content[:stkver],
             )
           end
         end
       end
 
-      # private
+      private
       def initial_processor
-        #user = User.where(mid: from_mid).first_or_initialize
-        #user.stage = 0
-        #user.save!
-        user = User.where(mid: from_mid).first
-
-        if data.content[:text] === "更新"
+        if text == "更新"
           user.stage = 0
-          user.save!
+          user.save
         end
-        stage = user.stage
 
-        if stage < 5
-          message = ""
-          case stage
-          when 0
-            #regions = ["練馬", "板橋", "北", "足立", "葛飾", "杉並", "中野", "豊島", "文京", "荒川", "世田谷", "渋谷", "新宿", "千代田", "台東", "墨田", "目黒", "港", "中央", "江東", "江戸川", "品川", "大田"]
-            regions = Region.all;
-            regions.each do |region|
-              #Rails.logger.debug("==========================")
-              #Rails.logger.debug(region.name)
-              #Rails.logger.debug("==========================")
-              if region.name === data.content[:text]
-                user.region = region
-                stage += 1
-                user.stage = stage
-                user.save!
-                break
-              end
-            end
-            # regions.each do |region|
-            #   if region === data.content[:text]
-            #     data = User.where(mid: from_mid).first
-            #     #data.first.update_attributes()
-            #     stage += 1
-            #     user.stage = stage
-            #     user.save!
-            #     break
-            #   end
-            # end
-          when 1
-            case data.content[:text]
-            when "1"
-              stage += 1
-              user.stage = stage
-              user.save!
-            when "2"
-              stage += 1
-              user.stage = stage
-              user.save!
-            when "3"
-              stage += 1
-              user.stage = stage
-              user.save!
-            when "4"
-              stage += 1
-              user.stage = stage
-              user.save!
-            else
-              message += "==========================\n"
-              message += "選択は正しくない,もう一回しましょう\n"
-            end
-          when 2
-            if data.content[:text].length < 10
-              message += "==========================\n"
-              message += "みじかい！！（<10文字）\n"
-            elsif data.content[:text].length < 20
-              message += "==========================\n"
-              message += "もっと詳しく教えてちょうだい　（＜20文字）\n"
-            else
-              message += "==========================\n"
-              message += "いい感じの出会いしてるじゃないの（＞20文字）\n"
-            end
-            stage += 1
-            user.stage = stage
-            user.save!
-          when 3
-            if data.content[:text].length < 20
-              message += "==========================\n"
-              message += "みじかい！もっとあるでしょう！！恥ずかしがらずに！（＜20文字）\n"
-            else
-              message += "==========================\n"
-              message += "ふぅ～～ん，素敵じゃない（＞20文字）\n"
-            end
-            stage += 1
-            user.stage = stage
-            user.save!
-          when 4
-            stage += 1
-            user.stage = stage
-            user.save!
+        message = ""
+        msg_flg = false
+          # management
+        case user.stage
+        when 0
+          messages = BotMessage.find_by(stage: user.stage)
+          messages.text.split("<section>").each do |message|
+            send_to_him(message)
+          end
+          msg_flg = true
+          user.increment!(:stage)
+        when 1
+          region = Region.find_by(name: text)
+          unless region
+            send_to_him("知らない場所だわ...ごめんなさい...")
+            send_to_him("もう一度聞いてもいいかしら？")
+          else
+            user.region = region
+            msg_flg = true
+            user.increment!(:stage)
+            send_to_him("ふ～ん...#{region.name}によく行くのね")
+          end
+        when 2
+          if text =~ /年/
+            length = 100
+          else
+            length = text.match(/\d{1,2}/)
+            length = length.to_s.to_i if length
           end
 
-          case stage
-          when 0
-            message += "==========================\n"
-            message += "あなたをグループの一員として認めます！\n"
-            message += "ようこそ，悩める彼氏のための相談BOTへ"
-            message += "まずあなたが本当に悩める男なのか，私が見定めてあげるわ♪\n"
-            message += "==========================\n"
-            message += "まずあなたの地域はどこ？\n"
-            message += "以下の選択の中で１つ入力ください\n"
-            message += "練馬, 板橋, 北, 足立, 葛飾, 杉並, 中野, 豊島, 文京, 荒川, 世田谷, 渋谷, 新宿, 千代田, 台東, 墨田, 目黒, 港, 中央, 江東, 江戸川, 品川, 大田\n"
-          when 1
-            message += "==========================\n"
-            message += "今の彼女とは付き合い始めて何か月？"
-            message += "以下の選択の中の数字を入力ください\n"
-            message += "1. あら，結構長いじゃない (>12か月）\n"
-            message += "2. 彼氏歴もそこそこね， （<12か月）\n"
-            message += "3. 新米彼氏さんなのね， （<3か月）\n"
-            message += "4. 恥ずかしがらないでちゃんと答えなさ～い　(数字じゃない)\n"
-          when 2
-            message += "==========================\n"
-            message += "どこで出会ったのかしら？なれそめを詳しく教えて？\n"
-          when 3
-            message += "==========================\n"
-            message += "彼女のどこが好きなのかしら，詳しく聞かせて？\n"
-          when 4
-            message += "==========================\n"
-            message += "審査中（スタンプとかあるとかわいいなぁ）\n"
-            message += "あなたは悩める彼氏，．．．．　のようね！（全部ok）\n"
-            stage += 1
-            user.stage = stage
-            user.save!
+          case length
+          when 12 .. Float::INFINITY
+            send_to_him("結構長いのね。ぜひ後輩たちにいろいろ教えてあげてちょうだい！")
+          when 3 .. 12
+            send_to_him("彼氏歴もそこそこって感じかしら？")
+          when 0 .. 3
+            send_to_him("新米さんなのね。ここで先輩にいろいろ聞いてみるといいわよ。")
+          else
+            send_to_him("ごめんなさい。ちょっとわからないわ。もう一度教えてくれるかしら？")
           end
-      else
-         message = data.content[:text]
-      end
 
-        message = message || data.content[:text]
+          if length
+            msg_flg =  true
+            user.increment!(:stage)
+          end
+        when 3
+          case text.length
+          when 15 .. Float::INFINITY
+            send_to_him("あら！なかなかいい出会いじゃない！")
+            msg_flg =  true
+            user.increment!(:stage)
+          when 10 .. 15
+            send_to_him("もう少し詳しく教えてくれるかしら？")
+          when 0 .. 10
+            send_to_him("さすがに短すぎるわね...もっといろいろあるんじゃないかしら？")
+          end
+        end
+
+        # management
+        if user.stage == 4
+          messages = BotMessage.find_by(stage: user.stage)
+          messages.text.split("<section>").each do |message|
+            send_to_him(message)
+            sleep 5 if message =~ /\.+/
+          end
+        else
+          message = BotMessage.find_by(stage: user.stage)
+          send_to_him(message.text) if msg_flg
+        end
       end
 
       def text_processor
         message = ""
+
+        if user.questioner
+          case text
+          when /[緊急]/
+            text.slice!("[緊急]")
+            message += "========================緊急========================"
+            message += "\n#{user.name}さん:"
+            message += "\n#{text}"
+            message += "\n===================================================="
+          else
+            message += "#{user.name}さん:"
+            message += "\n#{text}"
+          end
+        else
+          message += text
+        end
+
+        message
       end
 
-      def to_mid
-        mids = User.all.map{|user| user.mid}
-        # mids.delete(from_mid)
+      def send_to_him(text)
+        client.send_text(
+          to_mid: from_mid,
+          text: text,
+        )
+      end
+
+      def send_to_them(text)
+        client.send_text(
+          to_mid: to_mids,
+          text: text,
+        )
+      end
+
+      def to_mids
+        region = user.tmp_region ? user.tmp_region : user.region
+
+        if user.tmp_region
+          mids = region
+                 .users
+                 .to_a
+                 .delete_if{|member| member.tmp_region_id != nil || member.mid == from_mid}
+                 .map{|member| member.mid}
+        else
+          origin_users = region
+                        .users
+                        .to_a
+                        .delete_if{|member| member.tmp_region_id != nil || member.mid == from_mid}
+          tmp_users = region
+                      .tmp_users
+                      .to_a
+                      .delete_if{|member| member.mid == from_mid}
+          mids = origin_users.concat(tmp_users).map{|member| member.mid}
+        end
 
         mids
       end

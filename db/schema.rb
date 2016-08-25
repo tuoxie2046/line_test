@@ -11,7 +11,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160824105138) do
+ActiveRecord::Schema.define(version: 20160825053537) do
+
+  create_table "bot_messages", force: :cascade do |t|
+    t.text     "text",       limit: 65535
+    t.integer  "stage",      limit: 4
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+  end
 
   create_table "regions", force: :cascade do |t|
     t.string   "name",       limit: 255
@@ -20,11 +27,14 @@ ActiveRecord::Schema.define(version: 20160824105138) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.text     "mid",        limit: 65535
-    t.integer  "stage",      limit: 4
-    t.integer  "region_id",  limit: 4
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
+    t.string   "name",          limit: 255
+    t.text     "mid",           limit: 65535,                 null: false
+    t.integer  "stage",         limit: 4,     default: 0,     null: false
+    t.boolean  "questioner",                  default: false, null: false
+    t.integer  "region_id",     limit: 4
+    t.integer  "tmp_region_id", limit: 4,     default: 0
+    t.datetime "created_at",                                  null: false
+    t.datetime "updated_at",                                  null: false
   end
 
 end
