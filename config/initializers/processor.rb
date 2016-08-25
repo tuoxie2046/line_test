@@ -260,7 +260,7 @@ module Line
           credentials: Aws::Credentials.new(ENV['AWS_ACCESS_ID'], ENV['AWS_SECRET_KEY'])
         )
 
-        s3 =Aws::S3::Resource.new.bucket('proto-storage')
+        s3 =Aws::S3::Resource.new.bucket('line-bot-20160824')
 
         s3.put_object(
           body: response.body,
